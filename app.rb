@@ -5,8 +5,10 @@ def update
   @api = refresh_ids
 end
 
+update
+
 get '/' do
-  @api
+  @api.to_json
 end
 
 get '/:rpps' do
