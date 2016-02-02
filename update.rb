@@ -14,7 +14,6 @@ def refresh_ids
   Zip::InputStream.open(file) do |io|
     puts "Unzipping..."
     while (entry = io.get_next_entry)
-      puts "Extracting #{entry.name}"
       csv_file = entry.get_input_stream
     end
   end
