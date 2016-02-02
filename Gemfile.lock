@@ -8,7 +8,7 @@ GEM
       rack (~> 1.1)
       tilt (~> 1.1)
     tilt (1.4.1)
-    zip (2.0.2)
+    zipruby (0.3.6)
 
 PLATFORMS
   ruby
@@ -17,7 +17,7 @@ DEPENDENCIES
   excelsior
   json
   sinatra (= 1.1.0)
-  zip
+  zipruby
 
 BUNDLED WITH
    1.11.2
