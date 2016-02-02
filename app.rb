@@ -6,7 +6,7 @@ def update
 end
 
 get '/' do
-  @api.to_json
+  @api
 end
 
 get '/:rpps' do
