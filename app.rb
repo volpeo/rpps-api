@@ -1,6 +1,5 @@
 require_relative 'update'
 require 'sinatra'
-require 'sinatra/reloader'
 
 api = ["test"]
 

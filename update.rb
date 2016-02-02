@@ -1,7 +1,6 @@
 require 'fileutils'
 require 'open-uri'
 require 'json'
-require 'excelsior' # DONT CHANGE TO CSV - Perf related
 require 'zipruby'
 
 URL = "https://annuaire.sante.fr/web/site-pro/extractions-publiques;jsessionid=696D7C19063EA11C1C7FAB3FFFC050A1?p_p_id=abonnementportlet_WAR_Inscriptionportlet_INSTANCE_3ok508MqmVaG&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=2&p_p_col_count=3&_abonnementportlet_WAR_Inscriptionportlet_INSTANCE_3ok508MqmVaG_nomFichier=ExtractionMonoTable_CAT18_ToutePopulation_201602020849.zip"
