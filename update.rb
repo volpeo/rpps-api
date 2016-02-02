@@ -14,7 +14,7 @@ def refresh_ids
   puts "File saved."
 
   # Zip.on_exists_proc = true
-  Zip::File.open('ids.zip') do |zip_file|
+  File.open('ids.zip') do |zip_file|
     puts "Unzipping..."
     zip_file.each do |entry|
       puts "Extracting #{entry.name}"
