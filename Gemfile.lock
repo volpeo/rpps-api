@@ -1,0 +1,23 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ccsv (1.1.0)
+    json (1.8.3)
+    rack (1.6.4)
+    sinatra (1.1.0)
+      rack (~> 1.1)
+      tilt (~> 1.1)
+    tilt (1.4.1)
+    zip (2.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ccsv
+  json
+  sinatra (= 1.1.0)
+  zip
+
+BUNDLED WITH
+   1.11.2
