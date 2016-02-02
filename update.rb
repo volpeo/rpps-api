@@ -8,10 +8,9 @@ URL = "https://annuaire.sante.fr/web/site-pro/extractions-publiques;jsessionid=6
 
 def refresh_ids
 
-  Zip::ZipInputStream.open(open(URL)) do |io|
-    puts "Unzipping..."
-    while (entry = io.get_next_entry)
-      csv_file = entry.get_input_stream
+  Zip::Archive.open_buffer(open(URL)) do |archive|
+    archive.each do |entry|
+      csv_file = entry.read
     end
   end
 
