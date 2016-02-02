@@ -10,35 +10,29 @@ def refresh_ids
 
 
   csv_file = []
+  puts "Fetching file from national database."
   Zip::Archive.open_buffer(open(URL).read) do |archive|
-    archive.each do |entry|
+    puts "Unzipping file..."
+    archive.map do |entry|
       csv_file << entry.read
     end
   end
 
   # puts "Formatting text before parsing..."
+
   puts "Parsing resulting CSV..."
-  csv_list = []
+  identifiants = csv_file[0].tr(";",",")
+                        .split("\n")
+                        .map {|e|
+                          [e.split(",")[8].tr("\",", ""), e.split(",")[1]]
+                          }
+                        .select { |e| e[0]=="Pharmacien"}
+                        .map { |e| e[1].tr("\",", "").to_i }
 
-  csv_file = csv_file[0].split("\n").map { |e| e.split(";") }
-
-  Excelsior::Reader.rows(csv_file[0]) { |row| csv_list << row }
-  puts "Parsed !"
-
-  identifiants = []
-
-  puts "Selecting Pharmacists..."
-  count = 0
-  csv_list.each do |entry|
-    if entry[8] == "\"Pharmacien\""
-      identifiants << entry[1].tr(",\"", "").to_i
-      count += 1
-      puts "#{count} pharmacists selected." if count%100 == 0
-    end
-  end
-
-  {
-    last_updated: Date.today,
-    ids: identifiants
-  }
+  puts "#{identifiants.length} pharmacists loaded."
+  puts "Returning data as Hash."
+  return {
+          last_updated: Date.today,
+          ids: identifiants
+         }
 end

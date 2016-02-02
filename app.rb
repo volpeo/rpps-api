@@ -1,16 +1,21 @@
 require_relative 'update'
 require 'sinatra'
+require 'sinatra/reloader'
 
-def update
-  @api = refresh_ids
+api = ["test"]
+
+def update(api)
+  api[0] = refresh_ids
 end
 
-update
+update(api)
 
 get '/' do
-  @api.to_json
+  content_type :json
+  api[0].to_json
 end
 
 get '/:rpps' do
-  @api[:ids].include?(params[:rpps]).to_json
+  content_type :json
+  api[0][:ids].include?(params[:rpps].to_i).to_json
 end
