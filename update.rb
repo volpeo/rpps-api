@@ -12,7 +12,6 @@ def refresh_ids
   csv_file = []
   Zip::Archive.open_buffer(open(URL).read) do |archive|
     archive.each do |entry|
-      puts "Hey"
       csv_file << entry.read
     end
   end
@@ -20,6 +19,8 @@ def refresh_ids
   # puts "Formatting text before parsing..."
   puts "Parsing resulting CSV..."
   csv_list = []
+
+  csv_file = csv_file[0].split("\n").map { |e| e.split(";") }
 
   Excelsior::Reader.rows(csv_file[0]) { |row| csv_list << row }
   puts "Parsed !"
