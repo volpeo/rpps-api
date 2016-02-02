@@ -11,7 +11,7 @@ def refresh_ids
   file = open(URL)
   puts "File saved."
 
-  Zip::InputStream.open(file) do |io|
+  Zip::ZipInputStream.open(file) do |io|
     puts "Unzipping..."
     while (entry = io.get_next_entry)
       csv_file = entry.get_input_stream
