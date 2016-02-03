@@ -9,9 +9,9 @@ end
 
 
 get '/' do
-  # content_type :json
+  content_type :json
   update(api)
-  p api[0]#.to_json
+  api[0].to_json
 end
 
 get '/:rpps' do
