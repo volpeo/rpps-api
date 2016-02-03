@@ -14,22 +14,18 @@ def refresh_ids(current)
 
   return current if current[:version] == version
 
-  csv_file = []
   Zip::Archive.open_buffer(open(url).read) do |archive|
     archive.map do |entry|
-      csv_file << entry.read
+      return {
+          version: version,
+          ids: entry.read.tr(";",",")
+                        .split("\n")
+                        .map { |e| [e.split(",")[8].tr("\",", ""), e.split(",")[1]] }
+                        .select { |e| e[0] == "Pharmacien"}
+                        .map { |e| e[1].tr("\",", "").to_i }
+         }
     end
   end
 
-  identifiants = csv_file[0].tr(";",",")
-                        .split("\n")
-                        .map {|e|
-                          [e.split(",")[8].tr("\",", ""), e.split(",")[1]]
-                          }
-                        .select { |e| e[0] == :Pharmacien}
-                        .map { |e| e[1].tr("\",", "").to_i }
-  return {
-          version: version,
-          ids: identifiants
-         }
+
 end
