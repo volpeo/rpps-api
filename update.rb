@@ -18,11 +18,10 @@ def refresh_ids(current)
     archive.map do |entry|
       return {
           version: version,
-          ids: entry.read.tr(";",",")
+          ids: entry.read
                         .split("\n")
-                        .map { |e| [e.split(",")[8].tr("\",", ""), e.split(",")[1]] }
-                        .select { |e| e[0] == "Pharmacien"}
-                        .map { |e| e[1].tr("\",", "").to_i }
+                        .select { |e| e[8].split(";")[8].tr("\",", "") == "Pharmacien"}
+                        .map { |e| e.split(";")[1].tr("\",", "").to_i }
          }
     end
   end
