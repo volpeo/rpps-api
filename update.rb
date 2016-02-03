@@ -20,7 +20,7 @@ def refresh_ids(current)
           version: version,
           ids: entry.read
                         .split("\n")
-                        .select { |e| e[8].split(";")[8].tr("\",", "") == "Pharmacien"}
+                        .select { |e| e.split(";")[8].tr("\";", "") == "Pharmacien"}
                         .map { |e| e.split(";")[1].tr("\",", "").to_i }
          }
     end
