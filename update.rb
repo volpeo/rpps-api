@@ -2,15 +2,21 @@ require 'fileutils'
 require 'open-uri'
 require 'json'
 require 'zipruby'
+require 'nokogiri'
 
-URL = "https://annuaire.sante.fr/web/site-pro/extractions-publiques;jsessionid=696D7C19063EA11C1C7FAB3FFFC050A1?p_p_id=abonnementportlet_WAR_Inscriptionportlet_INSTANCE_3ok508MqmVaG&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_pos=2&p_p_col_count=3&_abonnementportlet_WAR_Inscriptionportlet_INSTANCE_3ok508MqmVaG_nomFichier=ExtractionMonoTable_CAT18_ToutePopulation_201602020849.zip"
 
-def refresh_ids
+def refresh_ids(current)
 
+  puts current[:version]
+
+  url =  Nokogiri::HTML.parse(open("https://annuaire.sante.fr/web/site-pro/extractions-publiques")).css(".col_4a a")[0]["href"]
+  version = url.split(".zip")[0].split("_")[-1]
+
+  return current if current[:version] == version
 
   csv_file = []
   puts "Fetching file from national database."
-  Zip::Archive.open_buffer(open(URL).read) do |archive|
+  Zip::Archive.open_buffer(open(url).read) do |archive|
     puts "Unzipping file..."
     archive.map do |entry|
       csv_file << entry.read
@@ -31,7 +37,7 @@ def refresh_ids
   puts "#{identifiants.length} pharmacists loaded."
   puts "Returning data as Hash."
   return {
-          last_updated: Date.today,
+          version: version,
           ids: identifiants
          }
 end
