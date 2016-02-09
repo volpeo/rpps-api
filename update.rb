@@ -16,8 +16,12 @@ def refresh_ids(current)
   return current if current[:version] == version
   puts "Fetching DBv#{version}..."
 
-  Zip::Archive.open_buffer(open(url).read) do |archive|
-    puts "DBv#{version} fetched !"
+  zipfile = File.open('/tmp/zip', 'w')
+  zipfile << open(url).read
+  puts "DBv#{version} fetched !"
+
+
+  Zip::Archive.open_buffer(zipfile) do |archive|
     puts "Unzipping..."
     archive.map do |entry|
       return {
