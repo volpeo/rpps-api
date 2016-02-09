@@ -1,19 +1,19 @@
 require_relative 'update'
 require 'sinatra'
 
-API = [{version: "0000"}]
+API = {version: "0000", ids:[]}
 
 def update
-  API[0] = refresh_ids(API[0])
+  API = refresh_ids(API)
   puts "DB refreshed !"
 end
 
 get '/' do
   content_type :json
-  API[0].to_json
+  API.to_json
 end
 
 get '/:rpps' do
   content_type :json
-  API[0][:ids].include?(params[:rpps].to_i).to_json
+  API[:ids].include?(params[:rpps].to_i).to_json
 end
