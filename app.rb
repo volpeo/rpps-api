@@ -1,7 +1,7 @@
 require_relative 'update'
 require 'sinatra'
 
-attr_accessor api
+attr_accessor :api
 self.api = {version: "0000", ids:[]}
 
 def update
