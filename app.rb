@@ -1,7 +1,7 @@
 require_relative 'update'
 require 'sinatra'
 
-api = {version: "0000", ids:[]}
+self.api = {version: "0000", ids:[]}
 
 def update
   self.api = refresh_ids(self.api)
