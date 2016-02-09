@@ -20,7 +20,6 @@ def refresh_ids(current)
   zipfile << open(url).read
   puts "DBv#{version} fetched !"
 
-
   Zip::Archive.open('/tmp/zip') do |archive|
     puts "Unzipping..."
     archive.map do |entry|
