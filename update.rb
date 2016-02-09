@@ -21,7 +21,7 @@ def refresh_ids(current)
   puts "DBv#{version} fetched !"
 
 
-  Zip::Archive.open_buffer('/tmp/zip') do |archive|
+  Zip::Archive.open('/tmp/zip') do |archive|
     puts "Unzipping..."
     archive.map do |entry|
       return {
