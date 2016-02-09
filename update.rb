@@ -16,7 +16,7 @@ def refresh_ids(current)
   return current if current[:version] == version
   puts "Fetching DBv#{version}..."
 
-  zipfile = File.open('/tmp/zip', 'w')
+  zipfile = open('/tmp/zip', 'w')
   zipfile << open(url).read
   puts "DBv#{version} fetched !"
 
