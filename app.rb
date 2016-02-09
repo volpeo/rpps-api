@@ -4,7 +4,7 @@ require 'sinatra'
 api = {version: "0000", ids:[]}
 
 def update
-  api = refresh_ids(api)
+  self.api = refresh_ids(self.api)
   puts "DB refreshed !"
 end
 
