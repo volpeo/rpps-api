@@ -3,7 +3,7 @@ require 'sinatra'
 
 API = [{version: "0000"}]
 
-def update(api)
+def update
   API[0] = refresh_ids(API[0])
 end
 
