@@ -9,11 +9,13 @@ def update
 end
 
 get '/' do
+  update
   content_type :json
   $api.to_json
 end
 
 get '/:rpps' do
+  update
   content_type :json
   $api[:ids].include?(params[:rpps].to_i).to_json
 end
