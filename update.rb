@@ -35,7 +35,7 @@ def refresh_ids
       raw_data.select! { |e| e[content[0].index("Libellé profession")] == "Pharmacien" }
       puts "Constructing JSON objects from data..."
 
-      raw_data.map do |p|
+      raw_data.each do |p|
         Pharmacist.find_or_initialize_by(rpps_id: p[content[0].index("Identifiant PP")]).
           update_attributes!(
             first_name: p[content[0].index("Prénom d'exercice")],
