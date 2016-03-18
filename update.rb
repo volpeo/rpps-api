@@ -3,17 +3,20 @@ require 'open-uri'
 require 'json'
 require 'zipruby'
 require 'nokogiri'
+require './models/pharmacist'
+require './models/version'
 
 
-def refresh_ids(current)
+def refresh_ids
 
-  puts "Currently using : DBv#{current[:version]}."
+  puts "Currently using : DBv#{Version.first.number}."
 
   url =  Nokogiri::HTML.parse(open("https://annuaire.sante.fr/web/site-pro/extractions-publiques")).css(".col_4a a")[0]["href"]
   version = url.split(".zip")[0].split("_")[-1]
   puts "Most recent version on Annuaire.Sante.fr : v#{version}."
 
-  return current if current[:version] == version
+  return version if Version.first.number == version
+
   puts "Fetching DBv#{version}..."
 
   zipfile = open('/tmp/zip', 'w')
@@ -23,42 +26,37 @@ def refresh_ids(current)
   Zip::Archive.open('/tmp/zip') do |archive|
     puts "Unzipping..."
     archive.map do |entry|
-      content = entry.read.split("\n")
+      content = entry.read.tr("\"", "").force_encoding("utf-8").split("\n").map { |e| e.split(";") }
       puts "Unzipped !"
-      titles = content[0].split(";").map { |title| title.tr("\"", "").force_encoding("utf-8") }
       puts "Column titles extracted !"
       puts "Preparing to work on data."
-      raw_data = content[1..-1].map { |e| e.tr("\"", "").force_encoding("utf-8").split(";").map { |e| e } }
+      raw_data = content[1..-1]
       puts "Selecting pharmacists only..."
-      raw_data.select! { |e| e[titles.index("Libellé profession")] == "Pharmacien" }
+      raw_data.select! { |e| e[content[0].index("Libellé profession")] == "Pharmacien" }
       puts "Constructing JSON objects from data..."
 
-      return {
-        version: version,
-        data: raw_data.map do |p|
-          {
-            rpps_id: p[titles.index("Identifiant PP")],
-            first_name: p[titles.index("Prénom d'exercice")],
-            last_name: p[titles.index("Nom d'exercice")],
-            email_address: p[titles.index("Adresse e-mail (coord. structure)")],
-            siret: p[titles.index("Numéro SIRET site")],
-            siren: p[titles.index("Numéro SIREN site")],
-            finess: p[titles.index("Numéro FINESS site")],
-            address: {
-              number: p[titles.index("Numéro Voie (coord. structure)")],
-              repeat: p[titles.index("Indice répétition voie (coord. Structure)")],
-              street_type: p[titles.index("Libellé type de voie (coord. structure)")],
-              street_name: p[titles.index("Libellé Voie (coord. structure)")],
-              distribution: p[titles.index("Mention distribution (coord. structure)")],
-              cedex: p[titles.index("Bureau cedex (coord. structure)")],
-              zipcode: p[titles.index("Code postal (coord. structure)")],
-              city_name: p[titles.index("Libellé commune (coord. structure)")],
-              country_name: p[titles.index("Libellé pays (coord. structure)")],
-              phone_number: p[titles.index("Téléphone (coord. structure)")]
-           }
-          }
-        end
-      }
+      raw_data.map do |p|
+        Pharmacist.find_or_initialize_by(rpps_id: p[content[0].index("Identifiant PP")]).
+          update_attributes!(
+            first_name: p[content[0].index("Prénom d'exercice")],
+            last_name: p[content[0].index("Nom d'exercice")],
+            email_address: p[content[0].index("Adresse e-mail (coord. structure)")],
+            siret: p[content[0].index("Numéro SIRET site")],
+            siren: p[content[0].index("Numéro SIREN site")],
+            finess: p[content[0].index("Numéro FINESS site")],
+            number: p[content[0].index("Numéro Voie (coord. structure)")],
+            repeat: p[content[0].index("Indice répétition voie (coord. Structure)")],
+            street_type: p[content[0].index("Libellé type de voie (coord. structure)")],
+            street_name: p[content[0].index("Libellé Voie (coord. structure)")],
+            distribution: p[content[0].index("Mention distribution (coord. structure)")],
+            cedex: p[content[0].index("Bureau cedex (coord. structure)")],
+            zipcode: p[content[0].index("Code postal (coord. structure)")],
+            city_name: p[content[0].index("Libellé commune (coord. structure)")],
+            country_name: p[content[0].index("Libellé pays (coord. structure)")],
+            phone_number: p[content[0].index("Téléphone (coord. structure)")]
+          )
+      end
+      Version.first.update!(number: version)
     end
   end
 end
