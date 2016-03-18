@@ -6,3 +6,6 @@ gem 'json'
 gem 'nokogiri'
 gem 'zipruby'
 gem 'rake'
+gem 'derailed', group: :development
+gem 'faraday', group: :development
+gem "thin"

@@ -35,7 +35,7 @@ def refresh_ids(current)
 
       api_data = {
         version: version,
-        data: pharmacians.map do |p|
+        data: raw_data.map do |p|
           {
             rpps_id: p[titles.index("Identifiant PP")],
             first_name: p[titles.index("Prénom d'exercice")],
