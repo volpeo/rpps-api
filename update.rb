@@ -30,7 +30,7 @@ def refresh_ids(current)
       puts "Preparing to work on data."
       raw_data = content.split("\n")[1..-1].map { |e| e.split(";").map { |e| e.tr("\"", "").force_encoding("utf-8") } }
       puts "Selecting pharmacists only..."
-      pharmacians = raw_data.select { |e| e[titles.index("Libellé profession")] == "Pharmacien" }
+      raw_data.select! { |e| e[titles.index("Libellé profession")] == "Pharmacien" }
       puts "Constructing JSON objects from data..."
 
       api_data = {
