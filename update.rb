@@ -23,17 +23,17 @@ def refresh_ids(current)
   Zip::Archive.open('/tmp/zip') do |archive|
     puts "Unzipping..."
     archive.map do |entry|
-      content = entry.read
+      content = entry.read.split("\n")
       puts "Unzipped !"
-      titles = content.split("\n")[0].split(";").map { |title| title.tr("\"", "").force_encoding("utf-8") }
+      titles = content[0].split(";").map { |title| title.tr("\"", "").force_encoding("utf-8") }
       puts "Column titles extracted !"
       puts "Preparing to work on data."
-      raw_data = content.split("\n")[1..-1].map { |e| e.split(";").map { |e| e.tr("\"", "").force_encoding("utf-8") } }
+      raw_data = content[1..-1].map { |e| e.tr("\"", "").force_encoding("utf-8").split(";").map { |e| e } }
       puts "Selecting pharmacists only..."
       raw_data.select! { |e| e[titles.index("Libellé profession")] == "Pharmacien" }
       puts "Constructing JSON objects from data..."
 
-      api_data = {
+      return {
         version: version,
         data: raw_data.map do |p|
           {
@@ -59,7 +59,6 @@ def refresh_ids(current)
           }
         end
       }
-      return api_data
     end
   end
 end
