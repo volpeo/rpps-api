@@ -40,7 +40,10 @@ get '/entries/:rpps' do
   if entry.nil?
     halt 404
   else
-    entry.to_json
+    h = entry.to_json
+    h = JSON.parse(h)
+    h.delete("email_address")
+    h.to_json
   end
 end
 

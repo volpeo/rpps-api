@@ -1,7 +1,8 @@
 <h1>AnnuaireSante's Public Extraction Data Browser.</h1>
 <h3>Data last updated on : <%= @version[6..7] %>/<%= @version[4..5] %>/<%= @version[0..3] %> - <%= @version[-4..-3] %>h<%= @version[-2..-1] %></h3>
+<h4>If the site doesn't answer (esp ~9:30AM) it's currently updating. In which case please come back a while later.</h4>
 
-<h2>Browsing the RPPS ids</h2>
+<h2>Browsing the RPPS ids.</h2>
 <code>/entries</code> will return the first 50 entries.<br>
 <code>/entries?page=1</code> will return the next 50.<br>
 <code>/entries?page=2</code> ...<br>
@@ -11,7 +12,7 @@
 /!\ Careful - Heavy response.<br>
 Using pagination is recommended.<br>
 
-<h2>Getting a list of emails/adresses/...</h2>
+<h2>Browsing specific data.</h2>
 <code>GET /entries?column=siret</code> will return a list of the 50 first SIRET numbers associated with the RPPS of their owner.<br>
 <code>GET /entries?column=siret&page=1</code> will return a list of the next 50 SIRET numbers associated with the RPPS of their owner.<br>
 <code>GET /entries/all?column=siret</code> will return a list of all SIRET numbers associated with the RPPS of their owner.<br>
@@ -54,9 +55,6 @@ Curently supported data columns are :<ul>
       </li>
       <li>
         <code>finess_judicial</code>
-      </li>
-      <li>
-        <code>email_address</code>
       </li>
     </ul>
   </li>
