@@ -28,7 +28,7 @@ def refresh_ids
     archive.map do |entry|
       content = entry.read.tr("\"", "").force_encoding("utf-8").split("\n")
     end
-    GC.start
+    GC.start # A LA MANO BEEYOTCH
     puts "Unzipped !"
     puts "Column titles extracted !"
     titles = content[0].split(";")
@@ -41,8 +41,8 @@ def refresh_ids
 
     raw_data.each_with_index do |p, index|
       p = p.split(";", -1)
-      Pharmacist.find_or_initialize_by(rpps_id: p[titles.index("Identifiant PP")]).
-        update_attributes!(
+      Pharmacist.find_or_initialize_by(rpps_id: p[titles.index("Identifiant PP")])
+        .update_attributes!(
           first_name: p[titles.index("Prénom d'exercice")],
           last_name: p[titles.index("Nom d'exercice")],
           email_address: p[titles.index("Adresse e-mail (coord. structure)")],
@@ -51,7 +51,8 @@ def refresh_ids
           finess: p[titles.index("Numéro FINESS site")],
           finess_judicial: p[titles.index("Numéro FINESS établissement juridique")]
         )
-      print "\r#{(100*index/content.length).round}%" if (100*index/content.length).round == (100*index/content.length)
+      # Counter that gives us the percentage of completion.
+      print "\r#{100*index/(content.length)}%" # DO NOT TRUST. ONLY GOES UP TO 16????
     end
     Version.first.update!(number: version)
   end

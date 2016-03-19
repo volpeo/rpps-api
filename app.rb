@@ -58,11 +58,11 @@ end
 
 def filtered_data(data, column)
   puts "Filtering response."
-  if column.nil? || !data[0].respond_to?(column.to_sym)
+  if column.nil? || !data[0].respond_to?(column.to_sym) || column == "email_address"
     filtered = data.map { |e| e.rpps_id }
   else
     filtered = data.map { |e| {rpps_id: e.rpps_id, (column.to_sym) => e.send(column.to_sym)} }.compact
-    filtered = filtered.compact.delete_if{ |e| e[column.to_sym].nil? }
+    filtered = filtered.compact.delete_if{ |e| e[column.to_sym].nil? || e[column.to_sym].empty? }
   end
 
   filtered
