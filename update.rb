@@ -44,16 +44,7 @@ def refresh_ids
             siret: p[content[0].index("Numéro SIRET site")],
             siren: p[content[0].index("Numéro SIREN site")],
             finess: p[content[0].index("Numéro FINESS site")],
-            number: p[content[0].index("Numéro Voie (coord. structure)")],
-            repeat: p[content[0].index("Indice répétition voie (coord. Structure)")],
-            street_type: p[content[0].index("Libellé type de voie (coord. structure)")],
-            street_name: p[content[0].index("Libellé Voie (coord. structure)")],
-            distribution: p[content[0].index("Mention distribution (coord. structure)")],
-            cedex: p[content[0].index("Bureau cedex (coord. structure)")],
-            zipcode: p[content[0].index("Code postal (coord. structure)")],
-            city_name: p[content[0].index("Libellé commune (coord. structure)")],
-            country_name: p[content[0].index("Libellé pays (coord. structure)")],
-            phone_number: p[content[0].index("Téléphone (coord. structure)")]
+            finess_judicial: p[content[0].index("Numéro FINESS établissement juridique")]
           )
       end
       Version.first.update!(number: version)

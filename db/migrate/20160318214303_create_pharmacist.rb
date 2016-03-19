@@ -8,17 +8,7 @@ class CreatePharmacist < ActiveRecord::Migration
       t.string :siret
       t.string :siren
       t.string :finess
-      t.string :address
-      t.string :number
-      t.string :repeat
-      t.string :street_type
-      t.string :street_name
-      t.string :distribution
-      t.string :cedex
-      t.string :zipcode
-      t.string :city_name
-      t.string :country_name
-      t.string :phone_number
+      t.string :finess_judicial
     end
 
      add_index "pharmacists", ["rpps_id"], name: "index_pharmacists_on_rpps_id", unique: true, using: :btree
