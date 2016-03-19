@@ -6,7 +6,6 @@ require 'nokogiri'
 require './models/pharmacist'
 require './models/version'
 
-
 def refresh_ids
 
   puts "Currently using : DBv#{Version.first.number}."
@@ -25,29 +24,35 @@ def refresh_ids
 
   Zip::Archive.open('/tmp/zip') do |archive|
     puts "Unzipping..."
+    content = ""
     archive.map do |entry|
-      content = entry.read.tr("\"", "").force_encoding("utf-8").split("\n").map { |e| e.split(";") }[1..-1]
-      puts "Unzipped !"
-      puts "Preparing to work on data."
-      puts "Selecting pharmacists only..."
-      content.select! { |e| e[8] == "Pharmacien" }
-      to_save = [1,5,6,15,16,17,18,39] # Def not future proof but I was forced by Heroku.
-      content = content.delete_if.with_index { |_, index| !to_save.include?(index) }
-      puts "Constructing JSON objects from data..."
-
-      content.each do |p|
-        Pharmacist.find_or_initialize_by(rpps_id: p[0]).
-          update_attributes!(
-            last_name: p[1],
-            first_name: p[2],
-            siret: p[3],
-            siren: p[4],
-            finess: p[5],
-            finess_judicial: p[6],
-            email_address: p[7]
-          )
-      end
-      Version.first.update!(number: version)
+      content = entry.read.tr("\"", "").force_encoding("utf-8").split("\n")
     end
+    GC.start
+    puts "Unzipped !"
+    puts "Column titles extracted !"
+    titles = content[0].split(";")
+    puts "Preparing to work on data."
+    raw_data = content[1..-1]
+    GC.start
+    puts "Selecting pharmacists only..."
+    raw_data.select! { |e| e.split(";", -1)[titles.index("Libellé profession")] == "Pharmacien" }
+    puts "Constructing JSON objects from data..."
+
+    raw_data.each_with_index do |p, index|
+      p = p.split(";", -1)
+      Pharmacist.find_or_initialize_by(rpps_id: p[titles.index("Identifiant PP")]).
+        update_attributes!(
+          first_name: p[titles.index("Prénom d'exercice")],
+          last_name: p[titles.index("Nom d'exercice")],
+          email_address: p[titles.index("Adresse e-mail (coord. structure)")],
+          siret: p[titles.index("Numéro SIRET site")],
+          siren: p[titles.index("Numéro SIREN site")],
+          finess: p[titles.index("Numéro FINESS site")],
+          finess_judicial: p[titles.index("Numéro FINESS établissement juridique")]
+        )
+      print "\r#{(100*index/content.length).round}%" if (100*index/content.length).round == (100*index/content.length)
+    end
+    Version.first.update!(number: version)
   end
 end

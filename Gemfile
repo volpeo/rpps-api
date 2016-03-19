@@ -8,6 +8,7 @@ gem 'zipruby'
 gem 'rake'
 gem 'derailed', group: :development
 gem 'faraday', group: :development
+gem 'byebug', group: :development
 gem "activerecord"
 gem "sinatra-activerecord"
 gem "pg"

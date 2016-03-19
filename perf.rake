@@ -6,7 +6,6 @@ require 'derailed_benchmarks/tasks'
 
 namespace :perf do
   task :rack_load do
-    require_relative 'lib/application'
-
+    require_relative 'app.rb'
   end
 end

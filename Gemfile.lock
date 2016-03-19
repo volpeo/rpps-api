@@ -17,6 +17,7 @@ GEM
     arel (6.0.3)
     benchmark-ips (2.5.0)
     builder (3.2.2)
+    byebug (8.2.2)
     derailed (0.1.0)
       derailed_benchmarks
     derailed_benchmarks (1.3.0)
@@ -60,6 +61,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  byebug
   derailed
   faraday
   json
