@@ -44,8 +44,8 @@ def refresh_ids
             siret: p[3],
             siren: p[4],
             finess: p[5],
-            finess_judicial: p[6]
-            email_address: p[7],
+            finess_judicial: p[6],
+            email_address: p[7]
           )
       end
       Version.first.update!(number: version)
