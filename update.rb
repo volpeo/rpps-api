@@ -14,7 +14,10 @@ def refresh_ids
   version = url.split(".zip")[0].split("_")[-1]
   puts "Most recent version on Annuaire.Sante.fr : v#{version}."
 
-  return version if Version.first.number == version
+  if Version.first.number == version
+    puts "Already up to date !"
+    return version
+  end
 
   puts "Fetching DBv#{version}..."
 
@@ -37,7 +40,7 @@ def refresh_ids
     GC.start
     puts "Selecting pharmacists only..."
     raw_data.select! { |e| e.split(";", -1)[titles.index("Libellé profession")] == "Pharmacien" }
-    puts "Constructing JSON objects from data..."
+    puts "Constructing objects from data..."
 
     raw_data.each_with_index do |p, index|
       p = p.split(";", -1)
@@ -54,6 +57,7 @@ def refresh_ids
       # Counter that gives us the percentage of completion.
       print "\r#{100*index/(content.length)}%" # DO NOT TRUST. ONLY GOES UP TO 16????
     end
+    puts "Done !"
     Version.first.update!(number: version)
   end
 end
