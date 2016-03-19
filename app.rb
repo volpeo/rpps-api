@@ -4,24 +4,14 @@ require 'sinatra/activerecord'
 require './config/environments' #database configuration
 require './models/pharmacist'
 
-def update
-  if Version.all.length == 0
-    Version.create(number: "0000")
-  end
-  refresh_ids
-  puts "DB refreshed !"
-  halt 500 if Version.first.number == "0000"
-end
 
 get '/' do
-  update
   @version = Version.first.number
   erb :index
 end
 
 get '/entries' do
   content_type :json
-  update
   data = Pharmacist.all
   data = filtered_data(data, params["column"])
   data = paginated_data(data, params["page"])
@@ -29,13 +19,11 @@ get '/entries' do
 end
 
 get "/entries/all" do
-  update
   filtered_data(Pharmacist.all, params["column"]).to_json
 end
 
 get '/entries/:rpps' do
   content_type :json
-  update
   entry = Pharmacist.all.find{ |e| e[:rpps_id] == params[:rpps] }
   if entry.nil?
     halt 404
