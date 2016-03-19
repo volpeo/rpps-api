@@ -26,25 +26,26 @@ def refresh_ids
   Zip::Archive.open('/tmp/zip') do |archive|
     puts "Unzipping..."
     archive.map do |entry|
-      content = entry.read.tr("\"", "").force_encoding("utf-8").split("\n").map { |e| e.split(";") }
+      content = entry.read.tr("\"", "").force_encoding("utf-8").split("\n").map { |e| e.split(";") }[1..-1]
       puts "Unzipped !"
-      puts "Column titles extracted !"
       puts "Preparing to work on data."
       raw_data = content[1..-1]
       puts "Selecting pharmacists only..."
-      raw_data.select! { |e| e[content[0].index("Libellé profession")] == "Pharmacien" }
+      raw_data.select! { |e| e[8] == "Pharmacien" }
+      to_save = [1,5,6,15,16,17,18,39] # Def not future proof but I was forced by Heroku.
+      raw_data = raw_data.delete_if.with_index { |_, index| !to_save.include?(index) }
       puts "Constructing JSON objects from data..."
 
       raw_data.each do |p|
-        Pharmacist.find_or_initialize_by(rpps_id: p[content[0].index("Identifiant PP")]).
+        Pharmacist.find_or_initialize_by(rpps_id: p[0]).
           update_attributes!(
-            first_name: p[content[0].index("Prénom d'exercice")],
-            last_name: p[content[0].index("Nom d'exercice")],
-            email_address: p[content[0].index("Adresse e-mail (coord. structure)")],
-            siret: p[content[0].index("Numéro SIRET site")],
-            siren: p[content[0].index("Numéro SIREN site")],
-            finess: p[content[0].index("Numéro FINESS site")],
-            finess_judicial: p[content[0].index("Numéro FINESS établissement juridique")]
+            last_name: p[1],
+            first_name: p[2],
+            siret: p[3],
+            siren: p[4],
+            finess: p[5],
+            finess_judicial: p[6]
+            email_address: p[7],
           )
       end
       Version.first.update!(number: version)
