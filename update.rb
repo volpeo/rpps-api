@@ -29,14 +29,13 @@ def refresh_ids
       content = entry.read.tr("\"", "").force_encoding("utf-8").split("\n").map { |e| e.split(";") }[1..-1]
       puts "Unzipped !"
       puts "Preparing to work on data."
-      raw_data = content[1..-1]
       puts "Selecting pharmacists only..."
-      raw_data.select! { |e| e[8] == "Pharmacien" }
+      content.select! { |e| e[8] == "Pharmacien" }
       to_save = [1,5,6,15,16,17,18,39] # Def not future proof but I was forced by Heroku.
-      raw_data = raw_data.delete_if.with_index { |_, index| !to_save.include?(index) }
+      content = content.delete_if.with_index { |_, index| !to_save.include?(index) }
       puts "Constructing JSON objects from data..."
 
-      raw_data.each do |p|
+      content.each do |p|
         Pharmacist.find_or_initialize_by(rpps_id: p[0]).
           update_attributes!(
             last_name: p[1],
