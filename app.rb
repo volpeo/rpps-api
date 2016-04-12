@@ -24,9 +24,12 @@ end
 
 get '/entries/:rpps' do
   content_type :json
-  entry = Pharmacist.all.find{ |e| e[:rpps_id] == params[:rpps] }
+  entry = Pharmacist.where(rpps_id: params[:rpps]).take
   if entry.nil?
-    halt 404
+    status 404
+    {
+      error: "not_found"
+    }.to_json
   else
     h = entry.to_json
     h = JSON.parse(h)
